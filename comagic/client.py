@@ -17,6 +17,10 @@ class Comagic(object):
         :param uis: bool (if you wanna use uis api)
         """
         self._comagic_ap_id = None
+        if uis:
+            api_url = "https://dataapi.uiscom.ru/v2.0"
+        else:
+            api_url = "https://dataapi.comagic.ru/v2.0"
         if (login and password) or token:
             self.login = login
             self.password = password
