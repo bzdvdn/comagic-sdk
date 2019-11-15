@@ -57,7 +57,7 @@ class SipLine(BaseModel):
         return [
             'id', 'phone_number', 'type', 'employee_id', 'employee_full_name',
             'channels_count', 'dial_time', 'billing_state', 'physical_state',
-            'status', 'virtual_phone_number', 'ip_addresses',
+            'status', 'virtual_phone_number', 'ip_addresses', 'password', 'server',
         ]
 
 
@@ -364,3 +364,28 @@ class FinancialCallLegs(BaseModel):
     def from_dict(cls, model_dict):
         model_dict['start_time'] = parse_datetime(model_dict.get('start_time'))
         super().from_dict(model_dict)
+
+
+class AvailableVirtualNumber(BaseModel):
+    @classmethod
+    def fields(cls) -> list:
+        return [
+            'phone_number', 'category', 'location_mnemonic', 'location_name', 'onetime_payment', 'monthly_charge',
+            'min_charge',
+        ]
+
+
+class CampaignAvailablePhoneNumber(BaseModel):
+    @classmethod
+    def fields(cls) -> list:
+        return [
+            'id', 'phone_number', 'type'
+        ]
+
+
+class CampaignAvailableRedirectPhoneNumber(BaseModel):
+    @classmethod
+    def fields(cls) -> list:
+        return [
+            'id', 'phone_number',
+        ]
