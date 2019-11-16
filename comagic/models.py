@@ -389,3 +389,36 @@ class CampaignAvailableRedirectPhoneNumber(BaseModel):
         return [
             'id', 'phone_number',
         ]
+
+
+class CampaignWeight(BaseModel):
+    @classmethod
+    def fields(cls) -> list:
+        return [
+            'site_id', 'site_domain_name', 'entrance_page', 'referrer_domain', 'search_engine', 'search_query',
+            'engine', 'referrer', 'channel', 'location', 'utm_tags', 'os_tags', 'other_tags',
+        ]
+
+
+class SiteBlock(BaseModel):
+    @classmethod
+    def fields(cls) -> list:
+        return [
+            'id', 'name', 'site_id', 'site_domain_name', 'templates', 'phone_numbers'
+        ]
+
+
+class EmployeeGroup(BaseModel):
+    @classmethod
+    def fields(cls) -> list:
+        return [
+            'id', 'name', 'members', 'phone_number', 'group_phone_number', 'queue_enabled', 'channels_count'
+        ]
+
+
+class CustomerUser(BaseModel):
+    @classmethod
+    def fields(cls) -> list:
+        return [
+            'id', 'name', 'description', 'login', 'customer_id'
+        ]

@@ -1,11 +1,15 @@
 import requests
 from time import time
+from datetime import datetime
 from json import JSONDecodeError
 from typing import Optional, Union
 
 from .errors import ComagicException, ComagicParamsError
 from .models import (Account, VirtualNumber, AvailableVirtualNumber, SipLine, Scenario, MediaField, Campaign,
-                     CampaignAvailablePhoneNumber, CampaignAvailableRedirectPhoneNumber, )
+                     CampaignAvailablePhoneNumber, CampaignAvailableRedirectPhoneNumber, CampaignWeight, Site,
+                     SiteBlock, Tag, Employee, EmployeeGroup, CustomerUser, Call, CallLegs, FinancialCallLegs,
+                     Customer, Communication, Contact, Chat, ChatMessage, Schedule, VisitorSession, OfflineMessage,
+                     Goal)
 
 
 class Comagic(object):
@@ -94,9 +98,14 @@ class Comagic(object):
                             user_id: Optional[int] = None) -> any:
         if not fields:
             fields = VirtualNumber.fields()
-        params = self._create_endpoint_params('get', 'virtual_numbers', user_id=user_id,
-                                              limit=limit, offset=offset, filter=filter,
-                                              fields=fields, sort=sort)
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+        }
+        params = self._create_endpoint_params('get', 'virtual_numbers', user_id=user_id, **kwargs)
         response = self._send_api_request(params)
         return map(VirtualNumber.from_dict, response)
 
@@ -105,9 +114,14 @@ class Comagic(object):
                                       user_id: Optional[int] = None) -> Union[map, ComagicException]:
         if not fields:
             fields = AvailableVirtualNumber.fields()
-        params = self._create_endpoint_params('get', 'available_virtual_numbers', user_id=user_id,
-                                              limit=limit, offset=offset, filter=filter,
-                                              fields=fields, sort=sort)
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+        }
+        params = self._create_endpoint_params('get', 'available_virtual_numbers', user_id=user_id, **kwargs)
         response = self._send_api_request(params)
         return map(AvailableVirtualNumber.from_dict, response)
 
@@ -124,10 +138,15 @@ class Comagic(object):
 
     def get_sip_line_virtual_numbers(self, limit: Optional[int] = None, offset: Optional[int] = None,
                                      filter: dict = {}, fields: list = [], sort: list = [],
-                                     user_id: Optional[int] = None) -> Union[dict, ComagicException]:
-        params = self._create_endpoint_params('get', 'sip_line_virtual_numbers', user_id=user_id,
-                                              limit=limit, offset=offset, filter=filter,
-                                              fields=fields, sort=sort)
+                                     user_id: Optional[int] = None) -> any:
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+        }
+        params = self._create_endpoint_params('get', 'sip_line_virtual_numbers', user_id=user_id, **kwargs)
         return self._send_api_request(params)
 
     def create_sip_line(self, employee_id: int, virtual_phone_number: str, user_id: Optional[int] = None) -> any:
@@ -140,9 +159,14 @@ class Comagic(object):
                         channels_count: Optional[int] = None, user_id: Optional[int] = None) -> any:
         if billing_state is not None and billing_state not in ('active', 'manual_lock'):
             raise ComagicParamsError('billing_state not in [active, manual_lock]')
-        params = self._create_endpoint_params('update', 'sip_lines', id=id, employee_id=employee_id,
-                                              virtual_phone_number=virtual_phone_number, billing_state=billing_state,
-                                              channels_count=channels_count, user_id=user_id)
+        kwargs = {
+            'virtual_phone_number': virtual_phone_number,
+            'billing_state': billing_state,
+            'channels_count': channels_count,
+            'id': id,
+            'employee_id': employee_id
+        }
+        params = self._create_endpoint_params('update', 'sip_lines', user_id=user_id, **kwargs)
         return self._send_api_request(params)
 
     def delete_sip_line(self, id: int, user_id: Optional[int] = None) -> any:
@@ -151,10 +175,15 @@ class Comagic(object):
 
     def get_sip_lines(self, limit: Optional[int] = None, offset: Optional[int] = None,
                       filter: dict = {}, fields: list = [], sort: list = [],
-                      user_id: Optional[int] = None) -> Union[map, ComagicException]:
-        params = self._create_endpoint_params('get', 'sip_lines', user_id=user_id,
-                                              limit=limit, offset=offset, filter=filter,
-                                              fields=fields, sort=sort)
+                      user_id: Optional[int] = None) -> any:
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+        }
+        params = self._create_endpoint_params('get', 'sip_lines', user_id=user_id, **kwargs)
         response = self._send_api_request(params)
         return map(SipLine.from_dict, response)
 
@@ -164,30 +193,49 @@ class Comagic(object):
 
     def get_scenarios(self, limit: Optional[int] = None, offset: Optional[int] = None,
                       filter: dict = {}, fields: list = [], sort: list = [],
-                      user_id: Optional[int] = None) -> Union[map, ComagicException]:
-        params = self._create_endpoint_params('get', 'scenarios', user_id=user_id,
-                                              limit=limit, offset=offset, filter=filter,
-                                              fields=fields, sort=sort)
+                      user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = Scenario.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+        }
+        params = self._create_endpoint_params('get', 'scenarios', user_id=user_id, **kwargs)
         response = self._send_api_request(params)
         return map(Scenario.from_dict, response)
 
     def get_media_files(self, limit: Optional[int] = None, offset: Optional[int] = None,
                         filter: dict = {}, fields: list = [], sort: list = [],
-                        user_id: Optional[int] = None) -> Union[map, ComagicException]:
-        params = self._create_endpoint_params('get', 'media_files', user_id=user_id,
-                                              limit=limit, offset=offset, filter=filter,
-                                              fields=fields, sort=sort)
+                        user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = MediaField.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+        }
+        params = self._create_endpoint_params('get', 'media_files', user_id=user_id, **kwargs)
         response = self._send_api_request(params)
         return map(MediaField.from_dict, response)
 
     def get_campaigns(self, limit: Optional[int] = None, offset: Optional[int] = None,
                       filter: dict = {}, fields: list = [], sort: list = [],
-                      user_id: Optional[int] = None) -> Union[map, ComagicException]:
+                      user_id: Optional[int] = None) -> any:
         if not fields:
             fields = Campaign.fields()
-        params = self._create_endpoint_params('get', 'campaigns', user_id=user_id,
-                                              limit=limit, offset=offset, filter=filter,
-                                              fields=fields, sort=sort)
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+        }
+        params = self._create_endpoint_params('get', 'campaigns', user_id=user_id, **kwargs)
         response = self._send_api_request(params)
         return map(Campaign.from_dict, response)
 
@@ -197,24 +245,577 @@ class Comagic(object):
 
     def get_campaign_available_phone_numbers(self, limit: Optional[int] = None, offset: Optional[int] = None,
                                              filter: dict = {}, fields: list = [], sort: list = [],
-                                             user_id: Optional[int] = None) -> Union[map, ComagicException]:
+                                             user_id: Optional[int] = None) -> any:
         if not fields:
             fields = CampaignAvailablePhoneNumber.fields()
-        params = self._create_endpoint_params('get', 'campaign_available_phone_numbers', user_id=user_id,
-                                              limit=limit, offset=offset, filter=filter,
-                                              fields=fields, sort=sort)
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+        }
+        params = self._create_endpoint_params('get', 'campaign_available_phone_numbers', user_id=user_id, **kwargs)
         response = self._send_api_request(params)
         return map(CampaignAvailablePhoneNumber.from_dict, response)
 
     def get_campaign_available_redirection_phone_numbers(self, limit: Optional[int] = None,
                                                          offset: Optional[int] = None,
                                                          filter: dict = {}, fields: list = [], sort: list = [],
-                                                         user_id: Optional[int] = None) -> Union[map, ComagicException]:
+                                                         user_id: Optional[int] = None) -> any:
         if not fields:
             fields = CampaignAvailableRedirectPhoneNumber.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+        }
         params = self._create_endpoint_params('get', 'campaign_available_redirection_phone_numbers', user_id=user_id,
-                                              limit=limit, offset=offset, filter=filter,
-                                              fields=fields, sort=sort)
+                                              **kwargs)
         response = self._send_api_request(params)
         return map(CampaignAvailableRedirectPhoneNumber.from_dict, response)
 
+    def create_campaign(self, name: str, status: str, site_id: int, site_blocks: list,
+                        campaign_conditions: list, dynamic_call_tracking: list,
+                        description: Optional[str] = None, user_id: Optional[int] = None) -> any:
+        kwargs = {
+            'name': name,
+            'status': status,
+            'site_id': site_id,
+            'site_blocks': site_blocks,
+            'campaign_conditions': campaign_conditions,
+            'dynamic_call_tracking': dynamic_call_tracking,
+            'description': description,
+        }
+        params = self._create_endpoint_params('create', 'campaign', user_id=user_id, **kwargs)
+        return self._send_api_request(params)
+
+    def update_campaign(self, id: int, name: str, status: str, site_id: int, site_blocks: list,
+                        campaign_conditions: list, dynamic_call_tracking: list,
+                        description: Optional[str] = None, user_id: Optional[int] = None) -> any:
+        kwargs = {
+            'name': name,
+            'status': status,
+            'site_id': site_id,
+            'site_blocks': site_blocks,
+            'campaign_conditions': campaign_conditions,
+            'dynamic_call_tracking': dynamic_call_tracking,
+            'description': description,
+            'id': id,
+        }
+        params = self._create_endpoint_params('create', 'campaign', user_id=user_id, **kwargs)
+        return self._send_api_request(params)
+
+    def get_campaign_parameter_weights(self, limit: Optional[int] = None,
+                                       offset: Optional[int] = None,
+                                       filter: dict = {}, fields: list = [], sort: list = [],
+                                       user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = CampaignWeight.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+        }
+        params = self._create_endpoint_params('get', 'campaign_parameter_weights', user_id=user_id, **kwargs)
+        response = self._send_api_request(params)
+        return CampaignWeight.from_dict(response)
+
+    def update_campaign_parameter_weights(self, site_id: int, entrance_page: Optional[int] = None,
+                                          referrer_domain: Optional[int] = None, search_engine: Optional[int] = None,
+                                          search_query: Optional[int] = None, engine: Optional[int] = None,
+                                          referrer: Optional[int] = None, channel: Optional[int] = None,
+                                          location: Optional[int] = None, utm_tags: Optional[int] = None,
+                                          os_tags: Optional[int] = None, other_tags: Optional[int] = None,
+                                          user_id=None) -> any:
+        kwargs = {
+            'entrance_page': entrance_page,
+            'site_id': site_id,
+            'referrer_domain': referrer_domain,
+            'search_engine': search_engine,
+            'search_query': search_query,
+            'engine': engine,
+            'referrer': referrer,
+            'channel': channel,
+            'location': location,
+            'utm_tags': utm_tags,
+            'os_tags': os_tags,
+            'other_tags': other_tags,
+        }
+        params = self._create_endpoint_params('update', 'campaign_parameter_weights', user_id=user_id, **kwargs)
+        return self._send_api_request(params)
+
+    def create_site(self, domain_name: str, default_phone_number: str, industry_id: int,
+                    target_call_min_duration: Optional[int] = None, track_subdomains_enabled: Optional[bool] = None,
+                    default_scenario_id: Optional[int] = None, cookie_lifetime: Optional[int] = None,
+                    campaign_lifetime: Optional[int] = None, sales_enabled: Optional[bool] = None,
+                    second_communication_period: Optional[int] = None, services_enabled: Optional[bool] = None,
+                    replacement_dynamical_block_enabled: Optional[bool] = None, widget_link: Optional[dict] = None,
+                    show_visitor_id: Optional[dict] = None, user_id: Optional[int] = None) -> dict:
+        kwargs = {
+            'domain_name': domain_name,
+            'default_phone_number': default_phone_number,
+            'industry_id': industry_id,
+            'target_call_min_duration': target_call_min_duration,
+            'track_subdomains_enabled': track_subdomains_enabled,
+            'default_scenario_id': default_scenario_id,
+            'cookie_lifetime': cookie_lifetime,
+            'campaign_lifetime': campaign_lifetime,
+            'sales_enabled': sales_enabled,
+            'second_communication_period': second_communication_period,
+            'services_enabled': services_enabled,
+            'replacement_dynamical_block_enabled': replacement_dynamical_block_enabled,
+            'widget_link': widget_link,
+            'show_visitor_id': show_visitor_id,
+        }
+        params = self._create_endpoint_params('create', 'sites', user_id=user_id, **kwargs)
+        return self._send_api_request(params)
+
+    def update_site(self, id: int, domain_name: str, default_phone_number: str, industry_id: int,
+                    target_call_min_duration: Optional[int] = None, track_subdomains_enabled: Optional[bool] = None,
+                    default_scenario_id: Optional[int] = None, cookie_lifetime: Optional[int] = None,
+                    campaign_lifetime: Optional[int] = None, sales_enabled: Optional[bool] = None,
+                    second_communication_period: Optional[int] = None, services_enabled: Optional[bool] = None,
+                    replacement_dynamical_block_enabled: Optional[bool] = None, widget_link: Optional[dict] = None,
+                    show_visitor_id: Optional[dict] = None, user_id: Optional[int] = None) -> dict:
+        kwargs = {
+            'domain_name': domain_name,
+            'default_phone_number': default_phone_number,
+            'industry_id': industry_id,
+            'target_call_min_duration': target_call_min_duration,
+            'track_subdomains_enabled': track_subdomains_enabled,
+            'default_scenario_id': default_scenario_id,
+            'cookie_lifetime': cookie_lifetime,
+            'campaign_lifetime': campaign_lifetime,
+            'sales_enabled': sales_enabled,
+            'second_communication_period': second_communication_period,
+            'services_enabled': services_enabled,
+            'replacement_dynamical_block_enabled': replacement_dynamical_block_enabled,
+            'widget_link': widget_link,
+            'show_visitor_id': show_visitor_id,
+            'id': id,
+        }
+        params = self._create_endpoint_params('update', 'sites', user_id=user_id, **kwargs)
+        return self._send_api_request(params)
+
+    def delete_site(self, id: int, user_id: Optional[int] = None) -> dict:
+        kwargs = {
+            'id': id
+        }
+        params = self._create_endpoint_params('delete', 'sites', user_id=user_id, **kwargs)
+        return self._send_api_request(params)
+
+    def get_sites(self, limit: Optional[int] = None,
+                  offset: Optional[int] = None,
+                  filter: dict = {}, fields: list = [], sort: list = [],
+                  user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = Site.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+        }
+        params = self._create_endpoint_params('get', 'sites', user_id=user_id, **kwargs)
+        response = self._send_api_request(params)
+        return map(Site.from_dict, response)
+
+    def create_site_blocks(self, site_id: int, name: str, user_id: Optional[int] = None) -> dict:
+        kwargs = {
+            'site_od': site_id,
+            'name': name
+        }
+        params = self._create_endpoint_params('create', 'site_blocks', user_id=user_id, **kwargs)
+        return self._send_api_request(params)
+
+    def get_site_blocks(self, limit: Optional[int] = None,
+                        offset: Optional[int] = None,
+                        filter: dict = {}, fields: list = [], sort: list = [],
+                        user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = SiteBlock.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+        }
+        params = self._create_endpoint_params('get', 'site_blocks', user_id=user_id, **kwargs)
+        response = self._send_api_request(params)
+        return map(SiteBlock.from_dict, response)
+
+    def delete_site_block(self, id: int, user_id: Optional[int] = None) -> dict:
+        params = self._create_endpoint_params('delete', 'site_blocks', user_id=user_id, id=id)
+        return self._send_api_request(params)
+
+    def update_site_block(self, id: int, name: str, user_id: Optional[int] = None) -> dict:
+        kwargs = {
+            'id': id,
+            'name': name
+        }
+        params = self._create_endpoint_params('update', 'site_blocks', user_id=user_id, **kwargs)
+        return self._send_api_request(params)
+
+    def create_tag(self, name: str, user_id: Optional[int] = None) -> dict:
+        params = self._create_endpoint_params('create', 'tags', user_id=user_id, name=name)
+        return self._send_api_request(params)
+
+    def update_tag(self, id: int, name: str, user_id: Optional[int] = None) -> dict:
+        params = self._create_endpoint_params('update', 'tags', user_id=user_id, id=id, name=name)
+        return self._send_api_request(params)
+
+    def delete_tag(self, id: int, user_id: Optional[int] = None) -> dict:
+        params = self._create_endpoint_params('delete', 'tags', user_id=user_id, id=id)
+        return self._send_api_request(params)
+
+    def get_tags(self, limit: Optional[int] = None,
+                 offset: Optional[int] = None,
+                 filter: dict = {}, fields: list = [], sort: list = [],
+                 user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = Tag.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+        }
+        params = self._create_endpoint_params('get', 'tags', user_id=user_id, **kwargs)
+        response = self._send_api_request(params)
+        return map(Tag.from_dict, response)
+
+    def get_employees(self, limit: Optional[int] = None,
+                      offset: Optional[int] = None,
+                      filter: dict = {}, fields: list = [], sort: list = [],
+                      user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = Employee.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+        }
+        params = self._create_endpoint_params('get', 'employees', user_id=user_id, **kwargs)
+        response = self._send_api_request(params)
+        return map(Employee.from_dict, response)
+
+    def create_employee(self, last_name: str, phone_numbers: list, first_name: Optional[str] = None,
+                        patronymic: Optional[str] = None,
+                        status: Optional[str] = None, allowed_in_call_types: Optional[list] = None,
+                        allowed_out_call_types: Optional[list] = None, email: Optional[str] = None,
+                        call_recording: Optional[str] = None, schedule_id: Optional[int] = None,
+                        calls_available: Optional[bool] = None, extension: Optional[dict] = None,
+                        operator: Optional[dict] = None, user_id: Optional[int] = None) -> dict:
+        if status is not None \
+                and status not in ('available', 'break', 'do_not_disturb',
+                                   'not_at_workplace', 'not_at_work', 'unknown'):
+            raise ComagicParamsError('invalid status, status must be in [available, break, do_not_disturb, '
+                                     'not_at_workplace, not_at_work, unknown]')
+        if call_recording is not None \
+                and call_recording not in ('all', 'in', 'out', 'off'):
+            raise ComagicParamsError('invalid call_recording, call_recording must be in [all, in, out, off]')
+        kwargs = {
+            'last_name': last_name,
+            'phone_numbers': phone_numbers,
+            'first_name': first_name,
+            'patronymic': patronymic,
+            'allowed_in_call_types': allowed_in_call_types,
+            'allowed_out_call_types': allowed_out_call_types,
+            'email': email,
+            'call_recording': call_recording,
+            'status': status,
+            'schedule_id': schedule_id,
+            'calls_available': calls_available,
+            'extension': extension,
+            'operator': operator,
+        }
+        params = self._create_endpoint_params('create', 'employees', user_id=user_id, **kwargs)
+        return self._send_api_request(params)
+
+    def delete_employee(self, id: int, user_id: Optional[int] = None) -> dict:
+        params = self._create_endpoint_params('delete', 'employee', user_id=user_id, id=id)
+        return self._send_api_request(params)
+
+    def update_employee(self, id: int, last_name: Optional[str] = None, phone_numbers: Optional[list] = None,
+                        first_name: Optional[str] = None,
+                        patronymic: Optional[str] = None,
+                        status: Optional[str] = None, allowed_in_call_types: Optional[list] = None,
+                        allowed_out_call_types: Optional[list] = None, email: Optional[str] = None,
+                        call_recording: Optional[str] = None, schedule_id: Optional[int] = None,
+                        calls_available: Optional[bool] = None, extension: Optional[dict] = None,
+                        operator: Optional[dict] = None, user_id: Optional[int] = None) -> dict:
+        if status is not None \
+                and status not in ('available', 'break', 'do_not_disturb',
+                                   'not_at_workplace', 'not_at_work', 'unknown'):
+            raise ComagicParamsError('invalid status, status must be in [available, break, do_not_disturb, '
+                                     'not_at_workplace, not_at_work, unknown]')
+        if call_recording is not None \
+                and call_recording not in ('all', 'in', 'out', 'off'):
+            raise ComagicParamsError('invalid call_recording, call_recording must be in [all, in, out, off]')
+        kwargs = {
+            'last_name': last_name,
+            'id': id,
+            'phone_numbers': phone_numbers,
+            'first_name': first_name,
+            'patronymic': patronymic,
+            'allowed_in_call_types': allowed_in_call_types,
+            'allowed_out_call_types': allowed_out_call_types,
+            'email': email,
+            'call_recording': call_recording,
+            'status': status,
+            'schedule_id': schedule_id,
+            'calls_available': calls_available,
+            'extension': extension,
+            'operator': operator,
+        }
+        params = self._create_endpoint_params('update', 'employees', user_id=user_id, **kwargs)
+        return self._send_api_request(params)
+
+    def create_employees_group(self, name: str, members: Optional[list] = None,
+                               group_phone_number: Optional[str] = None,
+                               queue_enabled: Optional[bool] = None,
+                               channels_count: Optional[int] = None,
+                               user_id: Optional[int] = None) -> dict:
+        kwargs = {
+            'name': name,
+            'members': members,
+            'group_phone_number': group_phone_number,
+            'queue_enabled': queue_enabled,
+            'channels_count': channels_count,
+        }
+        params = self._create_endpoint_params('create', 'group_employees', user_id=user_id, **kwargs)
+        return self._send_api_request(params)
+
+    def delete_employees_group(self, id: int, user_id: Optional[int] = None) -> dict:
+        params = self._create_endpoint_params('delete', 'group_employees', user_id=user_id, id=id)
+        return self._send_api_request(params)
+
+    def update_employees_group(self, id: int, name: Optional[str] = None, members: Optional[list] = None,
+                               group_phone_number: Optional[str] = None,
+                               queue_enabled: Optional[bool] = None,
+                               channels_count: Optional[int] = None,
+                               user_id: Optional[int] = None) -> dict:
+        kwargs = {
+            'name': name,
+            'id': id,
+            'members': members,
+            'group_phone_number': group_phone_number,
+            'queue_enabled': queue_enabled,
+            'channels_count': channels_count,
+        }
+        params = self._create_endpoint_params('update', 'group_employees', user_id=user_id, **kwargs)
+        return self._send_api_request(params)
+
+    def get_employees_groups(self, limit: Optional[int] = None,
+                             offset: Optional[int] = None,
+                             filter: dict = {}, fields: list = [], sort: list = [],
+                             user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = EmployeeGroup.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+        }
+        params = self._create_endpoint_params('get', 'group_employees', user_id=user_id, **kwargs)
+        response = self._send_api_request(params)
+        return map(EmployeeGroup.from_dict, response)
+
+    def get_customer_users(self, limit: Optional[int] = None,
+                           offset: Optional[int] = None,
+                           filter: dict = {}, fields: list = [], sort: list = [],
+                           user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = CustomerUser.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+        }
+        params = self._create_endpoint_params('get', 'customer_users', user_id=user_id, **kwargs)
+        response = self._send_api_request(params)
+        return map(CustomerUser.from_dict, response)
+
+    def get_communication_report(self, date_from: datetime, date_till: datetime, limit: Optional[int] = None,
+                                 offset: Optional[int] = None,
+                                 filter: dict = {}, fields: list = [], sort: list = [],
+                                 user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = Communication.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+            'date_from': date_from.strftime('%Y-%m-%d %H:%M:%S'),
+            'date_till': date_till.strftime('%Y-%m-%d %H:%M:%S'),
+        }
+        params = self._create_endpoint_params('get', 'communications_report', user_id=user_id, **kwargs)
+        response = self._send_api_request(params)
+        return map(Communication.from_dict, response)
+
+    def get_calls_report(self, date_from: datetime, date_till: datetime, limit: Optional[int] = None,
+                         offset: Optional[int] = None,
+                         filter: dict = {}, fields: list = [], sort: list = [],
+                         user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = call.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+            'date_from': date_from.strftime('%Y-%m-%d %H:%M:%S'),
+            'date_till': date_till.strftime('%Y-%m-%d %H:%M:%S'),
+        }
+        params = self._create_endpoint_params('get', 'calls_report', user_id=user_id, **kwargs)
+        response = self._send_api_request(params)
+        return map(Call.from_dict, response)
+
+    def get_call_legs_report(self, date_from: datetime, date_till: datetime, limit: Optional[int] = None,
+                             offset: Optional[int] = None,
+                             filter: dict = {}, fields: list = [], sort: list = [],
+                             user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = CallLegs.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+            'date_from': date_from.strftime('%Y-%m-%d %H:%M:%S'),
+            'date_till': date_till.strftime('%Y-%m-%d %H:%M:%S'),
+        }
+        params = self._create_endpoint_params('get', 'call_legs_report', user_id=user_id, **kwargs)
+        response = self._send_api_request(params)
+        return map(CallLegs.from_dict, response)
+
+    def get_goals_report(self, date_from: datetime, date_till: datetime, limit: Optional[int] = None,
+                         offset: Optional[int] = None,
+                         filter: dict = {}, fields: list = [], sort: list = [],
+                         user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = Goal.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+            'date_from': date_from.strftime('%Y-%m-%d %H:%M:%S'),
+            'date_till': date_till.strftime('%Y-%m-%d %H:%M:%S'),
+        }
+        params = self._create_endpoint_params('get', 'goals_report', user_id=user_id, **kwargs)
+        response = self._send_api_request(params)
+        return map(Goal.from_dict, response)
+
+    def get_chats_report(self, date_from: datetime, date_till: datetime, limit: Optional[int] = None,
+                         offset: Optional[int] = None,
+                         filter: dict = {}, fields: list = [], sort: list = [],
+                         user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = Chat.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+            'date_from': date_from.strftime('%Y-%m-%d %H:%M:%S'),
+            'date_till': date_till.strftime('%Y-%m-%d %H:%M:%S'),
+        }
+        params = self._create_endpoint_params('get', 'chats_report', user_id=user_id, **kwargs)
+        response = self._send_api_request(params)
+        return map(Chat.from_dict, response)
+
+    def get_chat_messages_report(self, chat_id: int, limit: Optional[int] = None,
+                                 offset: Optional[int] = None,
+                                 filter: dict = {}, fields: list = [], sort: list = [],
+                                 user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = ChatMessage.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+            'chat': chat_id
+        }
+        params = self._create_endpoint_params('get', 'chat_messages_report', user_id=user_id, **kwargs)
+        response = self._send_api_request(params)
+        return map(ChatMessage.from_dict, response)
+
+    def get_offline_messages_report(self, date_from: datetime, date_till: datetime, limit: Optional[int] = None,
+                         offset: Optional[int] = None,
+                         filter: dict = {}, fields: list = [], sort: list = [],
+                         user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = OfflineMessage.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+            'date_from': date_from.strftime('%Y-%m-%d %H:%M:%S'),
+            'date_till': date_till.strftime('%Y-%m-%d %H:%M:%S'),
+        }
+        params = self._create_endpoint_params('get', 'chats_report', user_id=user_id, **kwargs)
+        response = self._send_api_request(params)
+        return map(OfflineMessage.from_dict, response)
+
+    def get_visitor_sessions_report(self, date_from: datetime, date_till: datetime, limit: Optional[int] = None,
+                                    offset: Optional[int] = None,
+                                    filter: dict = {}, fields: list = [], sort: list = [],
+                                    user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = VisitorSession.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+            'date_from': date_from.strftime('%Y-%m-%d %H:%M:%S'),
+            'date_till': date_till.strftime('%Y-%m-%d %H:%M:%S'),
+        }
+        params = self._create_endpoint_params('get', 'visitor_sessions_report', user_id=user_id, **kwargs)
+        response = self._send_api_request(params)
+        return map(VisitorSession.from_dict, response)
+
+    def get_financial_call_legs_report(self, date_from: datetime, date_till: datetime, limit: Optional[int] = None,
+                                    offset: Optional[int] = None,
+                                    filter: dict = {}, fields: list = [], sort: list = [],
+                                    user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = FinancialCallLegs.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+            'date_from': date_from.strftime('%Y-%m-%d %H:%M:%S'),
+            'date_till': date_till.strftime('%Y-%m-%d %H:%M:%S'),
+        }
+        params = self._create_endpoint_params('get', 'financial_call_legs_report', user_id=user_id, **kwargs)
+        response = self._send_api_request(params)
+        return map(FinancialCallLegs.from_dict, response)
