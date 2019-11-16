@@ -83,7 +83,7 @@ class Comagic(object):
         if user_id:
             default_params["params"].update({"user_id": user_id})
         if kwargs:
-            params = {key: value for key, value in kwargs.items() if value or isinstance(value, (bool, int))}
+            params = {key: value for key, value in kwargs.items() if value is not None}
             default_params["params"].update(**params)
         # print(default_params)
         return default_params
@@ -94,7 +94,7 @@ class Comagic(object):
         return Account.from_dict(response)
 
     def get_virtual_numbers(self, limit: Optional[int] = None, offset: Optional[int] = None,
-                            filter: dict = {}, fields: list = [], sort: list = [],
+                            filter: dict = None, fields: list = None, sort: list = [],
                             user_id: Optional[int] = None) -> any:
         if not fields:
             fields = VirtualNumber.fields()
@@ -110,7 +110,7 @@ class Comagic(object):
         return map(VirtualNumber.from_dict, response)
 
     def get_available_virtual_numbers(self, limit: Optional[int] = None, offset: Optional[int] = None,
-                                      filter: dict = {}, fields: list = [], sort: list = [],
+                                      filter: dict = None, fields: list = None, sort: list = None,
                                       user_id: Optional[int] = None) -> Union[map, ComagicException]:
         if not fields:
             fields = AvailableVirtualNumber.fields()
@@ -137,7 +137,7 @@ class Comagic(object):
         return self._send_api_request(params)
 
     def get_sip_line_virtual_numbers(self, limit: Optional[int] = None, offset: Optional[int] = None,
-                                     filter: dict = {}, fields: list = [], sort: list = [],
+                                     filter: dict = None, fields: list = None, sort: list = None,
                                      user_id: Optional[int] = None) -> any:
         kwargs = {
             'limit': limit,
@@ -174,7 +174,7 @@ class Comagic(object):
         return self._send_api_request(params)
 
     def get_sip_lines(self, limit: Optional[int] = None, offset: Optional[int] = None,
-                      filter: dict = {}, fields: list = [], sort: list = [],
+                      filter: dict = None, fields: list = None, sort: list = None,
                       user_id: Optional[int] = None) -> any:
         kwargs = {
             'limit': limit,
@@ -192,7 +192,7 @@ class Comagic(object):
         return self._send_api_request(params)
 
     def get_scenarios(self, limit: Optional[int] = None, offset: Optional[int] = None,
-                      filter: dict = {}, fields: list = [], sort: list = [],
+                      filter: dict = None, fields: list = None, sort: list = None,
                       user_id: Optional[int] = None) -> any:
         if not fields:
             fields = Scenario.fields()
@@ -208,7 +208,7 @@ class Comagic(object):
         return map(Scenario.from_dict, response)
 
     def get_media_files(self, limit: Optional[int] = None, offset: Optional[int] = None,
-                        filter: dict = {}, fields: list = [], sort: list = [],
+                        filter: dict = None, fields: list = None, sort: list = None,
                         user_id: Optional[int] = None) -> any:
         if not fields:
             fields = MediaField.fields()
@@ -224,7 +224,7 @@ class Comagic(object):
         return map(MediaField.from_dict, response)
 
     def get_campaigns(self, limit: Optional[int] = None, offset: Optional[int] = None,
-                      filter: dict = {}, fields: list = [], sort: list = [],
+                      filter: dict = None, fields: list = None, sort: list = None,
                       user_id: Optional[int] = None) -> any:
         if not fields:
             fields = Campaign.fields()
@@ -244,7 +244,7 @@ class Comagic(object):
         return self._send_api_request(params)
 
     def get_campaign_available_phone_numbers(self, limit: Optional[int] = None, offset: Optional[int] = None,
-                                             filter: dict = {}, fields: list = [], sort: list = [],
+                                             filter: dict = None, fields: list = None, sort: list = None,
                                              user_id: Optional[int] = None) -> any:
         if not fields:
             fields = CampaignAvailablePhoneNumber.fields()
@@ -261,7 +261,7 @@ class Comagic(object):
 
     def get_campaign_available_redirection_phone_numbers(self, limit: Optional[int] = None,
                                                          offset: Optional[int] = None,
-                                                         filter: dict = {}, fields: list = [], sort: list = [],
+                                                         filter: dict = None, fields: list = None, sort: list = None,
                                                          user_id: Optional[int] = None) -> any:
         if not fields:
             fields = CampaignAvailableRedirectPhoneNumber.fields()
@@ -310,7 +310,7 @@ class Comagic(object):
 
     def get_campaign_parameter_weights(self, limit: Optional[int] = None,
                                        offset: Optional[int] = None,
-                                       filter: dict = {}, fields: list = [], sort: list = [],
+                                       filter: dict = None, fields: list = None, sort: list = None,
                                        user_id: Optional[int] = None) -> any:
         if not fields:
             fields = CampaignWeight.fields()
@@ -411,7 +411,7 @@ class Comagic(object):
 
     def get_sites(self, limit: Optional[int] = None,
                   offset: Optional[int] = None,
-                  filter: dict = {}, fields: list = [], sort: list = [],
+                  filter: dict = None, fields: list = None, sort: list = None,
                   user_id: Optional[int] = None) -> any:
         if not fields:
             fields = Site.fields()
@@ -436,7 +436,7 @@ class Comagic(object):
 
     def get_site_blocks(self, limit: Optional[int] = None,
                         offset: Optional[int] = None,
-                        filter: dict = {}, fields: list = [], sort: list = [],
+                        filter: dict = None, fields: list = None, sort: list = None,
                         user_id: Optional[int] = None) -> any:
         if not fields:
             fields = SiteBlock.fields()
@@ -477,7 +477,7 @@ class Comagic(object):
 
     def get_tags(self, limit: Optional[int] = None,
                  offset: Optional[int] = None,
-                 filter: dict = {}, fields: list = [], sort: list = [],
+                 filter: dict = None, fields: list = None, sort: list = None,
                  user_id: Optional[int] = None) -> any:
         if not fields:
             fields = Tag.fields()
@@ -494,7 +494,7 @@ class Comagic(object):
 
     def get_employees(self, limit: Optional[int] = None,
                       offset: Optional[int] = None,
-                      filter: dict = {}, fields: list = [], sort: list = [],
+                      filter: dict = None, fields: list = None, sort: list = None,
                       user_id: Optional[int] = None) -> any:
         if not fields:
             fields = Employee.fields()
@@ -618,7 +618,7 @@ class Comagic(object):
 
     def get_employees_groups(self, limit: Optional[int] = None,
                              offset: Optional[int] = None,
-                             filter: dict = {}, fields: list = [], sort: list = [],
+                             filter: dict = None, fields: list = None, sort: list = None,
                              user_id: Optional[int] = None) -> any:
         if not fields:
             fields = EmployeeGroup.fields()
@@ -635,7 +635,7 @@ class Comagic(object):
 
     def get_customer_users(self, limit: Optional[int] = None,
                            offset: Optional[int] = None,
-                           filter: dict = {}, fields: list = [], sort: list = [],
+                           filter: dict = None, fields: list = None, sort: list = None,
                            user_id: Optional[int] = None) -> any:
         if not fields:
             fields = CustomerUser.fields()
@@ -652,7 +652,7 @@ class Comagic(object):
 
     def get_communication_report(self, date_from: datetime, date_till: datetime, limit: Optional[int] = None,
                                  offset: Optional[int] = None,
-                                 filter: dict = {}, fields: list = [], sort: list = [],
+                                 filter: dict = None, fields: list = None, sort: list = None,
                                  user_id: Optional[int] = None) -> any:
         if not fields:
             fields = Communication.fields()
@@ -671,10 +671,10 @@ class Comagic(object):
 
     def get_calls_report(self, date_from: datetime, date_till: datetime, limit: Optional[int] = None,
                          offset: Optional[int] = None,
-                         filter: dict = {}, fields: list = [], sort: list = [],
+                         filter: dict = None, fields: list = None, sort: list = None,
                          user_id: Optional[int] = None) -> any:
         if not fields:
-            fields = call.fields()
+            fields = Call.fields()
         kwargs = {
             'limit': limit,
             'offset': offset,
@@ -690,7 +690,7 @@ class Comagic(object):
 
     def get_call_legs_report(self, date_from: datetime, date_till: datetime, limit: Optional[int] = None,
                              offset: Optional[int] = None,
-                             filter: dict = {}, fields: list = [], sort: list = [],
+                             filter: dict = None, fields: list = None, sort: list = None,
                              user_id: Optional[int] = None) -> any:
         if not fields:
             fields = CallLegs.fields()
@@ -709,7 +709,7 @@ class Comagic(object):
 
     def get_goals_report(self, date_from: datetime, date_till: datetime, limit: Optional[int] = None,
                          offset: Optional[int] = None,
-                         filter: dict = {}, fields: list = [], sort: list = [],
+                         filter: dict = None, fields: list = None, sort: list = None,
                          user_id: Optional[int] = None) -> any:
         if not fields:
             fields = Goal.fields()
@@ -728,7 +728,7 @@ class Comagic(object):
 
     def get_chats_report(self, date_from: datetime, date_till: datetime, limit: Optional[int] = None,
                          offset: Optional[int] = None,
-                         filter: dict = {}, fields: list = [], sort: list = [],
+                         filter: dict = None, fields: list = None, sort: list = None,
                          user_id: Optional[int] = None) -> any:
         if not fields:
             fields = Chat.fields()
@@ -747,7 +747,7 @@ class Comagic(object):
 
     def get_chat_messages_report(self, chat_id: int, limit: Optional[int] = None,
                                  offset: Optional[int] = None,
-                                 filter: dict = {}, fields: list = [], sort: list = [],
+                                 filter: dict = None, fields: list = None, sort: list = None,
                                  user_id: Optional[int] = None) -> any:
         if not fields:
             fields = ChatMessage.fields()
@@ -765,7 +765,7 @@ class Comagic(object):
 
     def get_offline_messages_report(self, date_from: datetime, date_till: datetime, limit: Optional[int] = None,
                          offset: Optional[int] = None,
-                         filter: dict = {}, fields: list = [], sort: list = [],
+                         filter: dict = None, fields: list = None, sort: list = None,
                          user_id: Optional[int] = None) -> any:
         if not fields:
             fields = OfflineMessage.fields()
@@ -784,7 +784,7 @@ class Comagic(object):
 
     def get_visitor_sessions_report(self, date_from: datetime, date_till: datetime, limit: Optional[int] = None,
                                     offset: Optional[int] = None,
-                                    filter: dict = {}, fields: list = [], sort: list = [],
+                                    filter: dict = None, fields: list = None, sort: list = None,
                                     user_id: Optional[int] = None) -> any:
         if not fields:
             fields = VisitorSession.fields()
@@ -803,7 +803,7 @@ class Comagic(object):
 
     def get_financial_call_legs_report(self, date_from: datetime, date_till: datetime, limit: Optional[int] = None,
                                     offset: Optional[int] = None,
-                                    filter: dict = {}, fields: list = [], sort: list = [],
+                                    filter: dict = None, fields: list = None, sort: list = None,
                                     user_id: Optional[int] = None) -> any:
         if not fields:
             fields = FinancialCallLegs.fields()
