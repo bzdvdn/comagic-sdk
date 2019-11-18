@@ -5,6 +5,7 @@ from json import JSONDecodeError
 from typing import Optional, Union
 
 from .errors import ComagicException, ComagicParamsError
+from .utils import DATETIME_FORMAT
 from .models import (Account, VirtualNumber, AvailableVirtualNumber, SipLine, Scenario, MediaField, Campaign,
                      CampaignAvailablePhoneNumber, CampaignAvailableRedirectPhoneNumber, CampaignWeight, Site,
                      SiteBlock, Tag, Employee, EmployeeGroup, CustomerUser, Call, CallLegs, FinancialCallLegs,
@@ -681,8 +682,8 @@ class Comagic(object):
             'filter': filter,
             'fields': fields,
             'sort': sort,
-            'date_from': date_from.strftime('%Y-%m-%d %H:%M:%S'),
-            'date_till': date_till.strftime('%Y-%m-%d %H:%M:%S'),
+            'date_from': date_from.strftime(DATETIME_FORMAT),
+            'date_till': date_till.strftime(DATETIME_FORMAT),
         }
         params = self._create_endpoint_params('get', 'calls_report', user_id=user_id, **kwargs)
         response = self._send_api_request(params)
@@ -700,8 +701,8 @@ class Comagic(object):
             'filter': filter,
             'fields': fields,
             'sort': sort,
-            'date_from': date_from.strftime('%Y-%m-%d %H:%M:%S'),
-            'date_till': date_till.strftime('%Y-%m-%d %H:%M:%S'),
+            'date_from': date_from.strftime(DATETIME_FORMAT),
+            'date_till': date_till.strftime(DATETIME_FORMAT),
         }
         params = self._create_endpoint_params('get', 'call_legs_report', user_id=user_id, **kwargs)
         response = self._send_api_request(params)
@@ -719,8 +720,8 @@ class Comagic(object):
             'filter': filter,
             'fields': fields,
             'sort': sort,
-            'date_from': date_from.strftime('%Y-%m-%d %H:%M:%S'),
-            'date_till': date_till.strftime('%Y-%m-%d %H:%M:%S'),
+            'date_from': date_from.strftime(DATETIME_FORMAT),
+            'date_till': date_till.strftime(DATETIME_FORMAT),
         }
         params = self._create_endpoint_params('get', 'goals_report', user_id=user_id, **kwargs)
         response = self._send_api_request(params)
@@ -738,8 +739,8 @@ class Comagic(object):
             'filter': filter,
             'fields': fields,
             'sort': sort,
-            'date_from': date_from.strftime('%Y-%m-%d %H:%M:%S'),
-            'date_till': date_till.strftime('%Y-%m-%d %H:%M:%S'),
+            'date_from': date_from.strftime(DATETIME_FORMAT),
+            'date_till': date_till.strftime(DATETIME_FORMAT),
         }
         params = self._create_endpoint_params('get', 'chats_report', user_id=user_id, **kwargs)
         response = self._send_api_request(params)
@@ -775,8 +776,8 @@ class Comagic(object):
             'filter': filter,
             'fields': fields,
             'sort': sort,
-            'date_from': date_from.strftime('%Y-%m-%d %H:%M:%S'),
-            'date_till': date_till.strftime('%Y-%m-%d %H:%M:%S'),
+            'date_from': date_from.strftime(DATETIME_FORMAT),
+            'date_till': date_till.strftime(DATETIME_FORMAT),
         }
         params = self._create_endpoint_params('get', 'chats_report', user_id=user_id, **kwargs)
         response = self._send_api_request(params)
@@ -794,8 +795,8 @@ class Comagic(object):
             'filter': filter,
             'fields': fields,
             'sort': sort,
-            'date_from': date_from.strftime('%Y-%m-%d %H:%M:%S'),
-            'date_till': date_till.strftime('%Y-%m-%d %H:%M:%S'),
+            'date_from': date_from.strftime(DATETIME_FORMAT),
+            'date_till': date_till.strftime(DATETIME_FORMAT),
         }
         params = self._create_endpoint_params('get', 'visitor_sessions_report', user_id=user_id, **kwargs)
         response = self._send_api_request(params)
@@ -813,8 +814,8 @@ class Comagic(object):
             'filter': filter,
             'fields': fields,
             'sort': sort,
-            'date_from': date_from.strftime('%Y-%m-%d %H:%M:%S'),
-            'date_till': date_till.strftime('%Y-%m-%d %H:%M:%S'),
+            'date_from': date_from.strftime(DATETIME_FORMAT),
+            'date_till': date_till.strftime(DATETIME_FORMAT),
         }
         params = self._create_endpoint_params('get', 'financial_call_legs_report', user_id=user_id, **kwargs)
         response = self._send_api_request(params)

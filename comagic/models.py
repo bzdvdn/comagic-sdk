@@ -16,7 +16,7 @@ class BaseModel(object):
 
     @classmethod
     def from_dict(cls, model_dict):
-        return cls(**model_dict)
+        raise NotImplemented
 
     @classmethod
     def fields(cls) -> list:
@@ -35,6 +35,10 @@ class Account(BaseModel):
     def fields(cls) -> list:
         return ['app_id', 'name', 'timezone']
 
+    @classmethod
+    def from_dict(cls, model_dict):
+        return cls(**model_dict)
+
 
 class VirtualNumber(BaseModel):
     @classmethod
@@ -48,7 +52,7 @@ class VirtualNumber(BaseModel):
     @classmethod
     def from_dict(cls, model_dict):
         model_dict['activation_data'] = parse_datetime(model_dict.get('activation_data'))
-        super().from_dict(model_dict)
+        return cls(**model_dict)
 
 
 class SipLine(BaseModel):
@@ -60,6 +64,10 @@ class SipLine(BaseModel):
             'status', 'virtual_phone_number', 'ip_addresses', 'password', 'server',
         ]
 
+    @classmethod
+    def from_dict(cls, model_dict):
+        return cls(**model_dict)
+
 
 class Scenario(BaseModel):
     @classmethod
@@ -68,6 +76,10 @@ class Scenario(BaseModel):
             'id', 'name', 'virtual_phone_numbers', 'sites', 'campaigns'
         ]
 
+    @classmethod
+    def from_dict(cls, model_dict):
+        return cls(**model_dict)
+
 
 class MediaField(BaseModel):
     @classmethod
@@ -75,6 +87,10 @@ class MediaField(BaseModel):
         return [
             'id', 'name', 'duration', 'play_link', 'normalization', 'size', 'type'
         ]
+
+    @classmethod
+    def from_dict(cls, model_dict):
+        return cls(**model_dict)
 
 
 class Campaign(BaseModel):
@@ -89,7 +105,7 @@ class Campaign(BaseModel):
     @classmethod
     def from_dict(cls, model_dict):
         model_dict = parse_datetime(model_dict.get('creation_time'))
-        super().from_dict(model_dict)
+        return cls(**model_dict)
 
 
 class Site(BaseModel):
@@ -102,6 +118,10 @@ class Site(BaseModel):
             'widget_link', 'show_visitor_id', 'site_blocks', 'connected_integrations'
         ]
 
+    @classmethod
+    def from_dict(cls, model_dict):
+        return cls(**model_dict)
+
 
 class Tag(BaseModel):
     @classmethod
@@ -109,6 +129,10 @@ class Tag(BaseModel):
         return [
             'id', 'name', 'is_system'
         ]
+
+    @classmethod
+    def from_dict(cls, model_dict):
+        return cls(**model_dict)
 
 
 class Employee(BaseModel):
@@ -120,6 +144,10 @@ class Employee(BaseModel):
             'coach', 'phone_numbers', 'extension', 'operator'
         ]
 
+    @classmethod
+    def from_dict(cls, model_dict):
+        return cls(**model_dict)
+
 
 class Contact(BaseModel):
     @classmethod
@@ -130,6 +158,10 @@ class Contact(BaseModel):
             'organization_name', 'organization_id'
         ]
 
+    @classmethod
+    def from_dict(cls, model_dict):
+        return cls(**model_dict)
+
 
 class Schedule(BaseModel):
     @classmethod
@@ -137,6 +169,10 @@ class Schedule(BaseModel):
         return [
             'id', 'name', 'schedules'
         ]
+
+    @classmethod
+    def from_dict(cls, model_dict):
+        return cls(**model_dict)
 
 
 class CampaignDailyStat(BaseModel):
@@ -152,7 +188,7 @@ class CampaignDailyStat(BaseModel):
     @classmethod
     def from_dict(cls, model_dict):
         model_dict['date'] = parse_datetime(model_dict.get('date'))
-        super().from_dict(model_dict)
+        return cls(**model_dict)
 
 
 class Customer(BaseModel):
@@ -169,7 +205,7 @@ class Customer(BaseModel):
     def from_dict(cls, model_dict):
         model_dict['creation_date_time'] = parse_datetime(model_dict.get('creation_date_time'))
         model_dict['status_change_date_time'] = parse_datetime(model_dict.get('status_change_date_time'))
-        super().from_dict(model_dict)
+        return cls(**model_dict)
 
 
 class Communication(BaseModel):
@@ -192,7 +228,7 @@ class Communication(BaseModel):
     def from_dict(cls, model_dict):
         model_dict['date_time'] = parse_datetime(model_dict.get('date_time'))
         model_dict['sale_date'] = parse_datetime(model_dict.get('sale_date'))
-        super().from_dict(model_dict)
+        return cls(**model_dict)
 
 
 class Call(BaseModel):
@@ -222,7 +258,7 @@ class Call(BaseModel):
         model_dict['start_time'] = parse_datetime(model_dict.get('start_time'))
         model_dict['finish_time'] = parse_datetime(model_dict.get('finish_time'))
         model_dict['sale_date'] = parse_datetime(model_dict.get('sale_date'))
-        super().from_dict(model_dict)
+        return cls(**model_dict)
 
 
 class CallLegs(BaseModel):
@@ -241,7 +277,7 @@ class CallLegs(BaseModel):
     def from_dict(cls, model_dict):
         model_dict['start_time'] = parse_datetime(model_dict.get('start_time'))
         model_dict['connect_time'] = parse_datetime(model_dict.get('connect_time'))
-        super().from_dict(model_dict)
+        return cls(**model_dict)
 
 
 class Goal(BaseModel):
@@ -264,7 +300,7 @@ class Goal(BaseModel):
     def from_dict(cls, model_dict):
         model_dict['date_time'] = parse_datetime(model_dict.get('date_time'))
         model_dict['sale_date'] = parse_datetime(model_dict.get('sale_date'))
-        super().from_dict(model_dict)
+        return cls(**model_dict)
 
 
 class Chat(BaseModel):
@@ -289,7 +325,7 @@ class Chat(BaseModel):
     def from_dict(cls, model_dict):
         model_dict['date_time'] = parse_datetime(model_dict.get('date_time'))
         model_dict['sale_date'] = parse_datetime(model_dict.get('sale_date'))
-        super().from_dict(model_dict)
+        return cls(**model_dict)
 
 
 class ChatMessage(BaseModel):
@@ -302,7 +338,7 @@ class ChatMessage(BaseModel):
     @classmethod
     def from_dict(cls, model_dict):
         model_dict['date_time'] = parse_datetime(model_dict.get('model_dict'))
-        super().from_dict(model_dict)
+        return cls(**model_dict)
 
 
 class OfflineMessage(BaseModel):
@@ -328,6 +364,7 @@ class OfflineMessage(BaseModel):
         model_dict['date_time'] = parse_datetime(model_dict.get('date_time'))
         model_dict['sale_date'] = parse_datetime(model_dict.get('sale_date'))
         model_dict['process_time'] = parse_datetime(model_dict.get('process_time'))
+        return cls(**model_dict)
 
 
 class VisitorSession(BaseModel):
@@ -348,7 +385,7 @@ class VisitorSession(BaseModel):
     @classmethod
     def from_dict(cls, model_dict):
         model_dict['date_time'] = parse_datetime(model_dict.get('date_time'))
-        super().from_dict(model_dict)
+        return cls(**model_dict)
 
 
 class FinancialCallLegs(BaseModel):
@@ -382,6 +419,10 @@ class CampaignAvailablePhoneNumber(BaseModel):
             'id', 'phone_number', 'type'
         ]
 
+    @classmethod
+    def from_dict(cls, model_dict):
+        return cls(**model_dict)
+
 
 class CampaignAvailableRedirectPhoneNumber(BaseModel):
     @classmethod
@@ -389,6 +430,10 @@ class CampaignAvailableRedirectPhoneNumber(BaseModel):
         return [
             'id', 'phone_number',
         ]
+
+    @classmethod
+    def from_dict(cls, model_dict):
+        return cls(**model_dict)
 
 
 class CampaignWeight(BaseModel):
@@ -399,6 +444,10 @@ class CampaignWeight(BaseModel):
             'engine', 'referrer', 'channel', 'location', 'utm_tags', 'os_tags', 'other_tags',
         ]
 
+    @classmethod
+    def from_dict(cls, model_dict):
+        return cls(**model_dict)
+
 
 class SiteBlock(BaseModel):
     @classmethod
@@ -406,6 +455,10 @@ class SiteBlock(BaseModel):
         return [
             'id', 'name', 'site_id', 'site_domain_name', 'templates', 'phone_numbers'
         ]
+
+    @classmethod
+    def from_dict(cls, model_dict):
+        return cls(**model_dict)
 
 
 class EmployeeGroup(BaseModel):
@@ -415,6 +468,10 @@ class EmployeeGroup(BaseModel):
             'id', 'name', 'members', 'phone_number', 'group_phone_number', 'queue_enabled', 'channels_count'
         ]
 
+    @classmethod
+    def from_dict(cls, model_dict):
+        return cls(**model_dict)
+
 
 class CustomerUser(BaseModel):
     @classmethod
@@ -422,3 +479,7 @@ class CustomerUser(BaseModel):
         return [
             'id', 'name', 'description', 'login', 'customer_id'
         ]
+
+    @classmethod
+    def from_dict(cls, model_dict):
+        return cls(**model_dict)
