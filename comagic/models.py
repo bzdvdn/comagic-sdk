@@ -483,3 +483,27 @@ class CustomerUser(BaseModel):
     @classmethod
     def from_dict(cls, model_dict):
         return cls(**model_dict)
+
+
+class ContactGroup(BaseModel):
+    @classmethod
+    def fields(cls) -> list:
+        return [
+            'id', 'name', 'is_system', 'members'
+        ]
+
+    @classmethod
+    def from_dict(cls, model_dict):
+        return cls(**model_dict)
+
+
+class ContactOrganization(BaseModel):
+    @classmethod
+    def fields(cls) -> list:
+        return [
+            'id', 'name',
+        ]
+
+    @classmethod
+    def from_dict(cls, model_dict):
+        return cls(**model_dict)

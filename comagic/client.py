@@ -10,7 +10,7 @@ from .models import (Account, VirtualNumber, AvailableVirtualNumber, SipLine, Sc
                      CampaignAvailablePhoneNumber, CampaignAvailableRedirectPhoneNumber, CampaignWeight, Site,
                      SiteBlock, Tag, Employee, EmployeeGroup, CustomerUser, Call, CallLegs, FinancialCallLegs,
                      Customer, Communication, Contact, Chat, ChatMessage, Schedule, VisitorSession, OfflineMessage,
-                     Goal)
+                     Goal, ContactGroup, ContactOrganization)
 
 
 class Comagic(object):
@@ -48,7 +48,7 @@ class Comagic(object):
             raise ComagicException({"code": 502, "message": f"{e}"})
         if "error" in resp:
             if resp["error"]["code"] == -32001 and auth_counter <= 3:
-                return self._send_api_request(params, auth_counter+1)
+                return self._send_api_request(params, auth_counter + 1)
             raise ComagicException(resp["error"])
         if 'data' in resp['result']:
             return resp["result"]["data"]
@@ -820,3 +820,119 @@ class Comagic(object):
         params = self._create_endpoint_params('get', 'financial_call_legs_report', user_id=user_id, **kwargs)
         response = self._send_api_request(params)
         return map(FinancialCallLegs.from_dict, response)
+
+    def get_contacts(self, limit: Optional[int] = None,
+                     offset: Optional[int] = None,
+                     filter: dict = None, fields: list = None, sort: list = None,
+                     user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = Contact.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+        }
+        params = self._create_endpoint_params('get', 'contacts', user_id=user_id, **kwargs)
+        response = self._send_api_request(params)
+        return map(Contact.from_dict, response)
+
+    def delete_contact(self, id: int, user_id: Optional[int] = None) -> any:
+        params = self._create_endpoint_params('delete', 'contacts', user_id=user_id, id=id)
+        return self._send_api_request(params)
+
+    def create_contact(self, last_name: str, phone_numbers: list, first_name: Optional[str] = None,
+                       patronymic: Optional[str] = None, emails: Optional[list] = None,
+                       personal_manager_id: Optional[int] = None, organization_id: Optional[int] = None,
+                       groups: Optional[list] = None, user_id: Optional[int] = None) -> dict:
+        kwargs = {
+            'last_name': last_name,
+            'phone_numbers': phone_numbers,
+            'first_name': first_name,
+            'patronymic': patronymic,
+            'emails': emails,
+            'personal_manager_id': personal_manager_id,
+            'organization_id': organization_id,
+            'groups': groups,
+        }
+        params = self._create_endpoint_params('create', 'contacts', user_id=user_id, **kwargs)
+        return self._send_api_request(params)
+
+    def update_contact(self, id: int, last_name: str, phone_numbers: list, first_name: Optional[str] = None,
+                       patronymic: Optional[str] = None, emails: Optional[list] = None,
+                       personal_manager_id: Optional[int] = None, organization_id: Optional[int] = None,
+                       groups: Optional[list] = None, user_id: Optional[int] = None) -> dict:
+        kwargs = {
+            'id': id,
+            'last_name': last_name,
+            'phone_numbers': phone_numbers,
+            'first_name': first_name,
+            'patronymic': patronymic,
+            'emails': emails,
+            'personal_manager_id': personal_manager_id,
+            'organization_id': organization_id,
+            'groups': groups,
+        }
+        params = self._create_endpoint_params('update', 'contacts', user_id=user_id, **kwargs)
+        return self._send_api_request(params)
+
+    def create_contact_group(self, name: str, members: Optional[list] = None, user_id: Optional[int] = None) -> dict:
+        params = self._create_endpoint_params('create', 'group_contacts', user_id=user_id, name=name, members=members)
+        return self._send_api_request(params)
+
+    def delete_contact_group(self, id: int, user_id: Optional[int] = None) -> dict:
+        params = self._create_endpoint_params('delete', 'group_contacts', user_id=user_id, id=id)
+        return self._send_api_request(params)
+
+    def update_contact_group(self, id: int, name: str, members: Optional[list] = None,
+                             user_id: Optional[int] = None) -> dict:
+        params = self._create_endpoint_params('update', 'group_contacts', user_id=user_id, name=name,
+                                              members=members, id=id)
+        return self._send_api_request(params)
+
+    def get_contact_groups(self, limit: Optional[int] = None,
+                           offset: Optional[int] = None,
+                           filter: dict = None, fields: list = None, sort: list = None,
+                           user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = ContactGroup.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+        }
+        params = self._create_endpoint_params('get', 'group_contacts', user_id=user_id, **kwargs)
+        response = self._send_api_request(params)
+        return map(ContactGroup.from_dict, response)
+
+    def get_contact_organizations(self, limit: Optional[int] = None,
+                                  offset: Optional[int] = None,
+                                  filter: dict = None, fields: list = None, sort: list = None,
+                                  user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = ContactOrganization.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+        }
+        params = self._create_endpoint_params('get', 'contact_organizations', user_id=user_id, **kwargs)
+        response = self._send_api_request(params)
+        return map(ContactOrganization.from_dict, response)
+
+    def create_contact_organization(self, name: str, user_id: Optional[int] = None) -> dict:
+        params = self._create_endpoint_params('create', 'contact_organizations', user_id=user_id, name=name)
+        return self._send_api_request(params)
+
+    def update_contact_organization(self, id: int, name: str, user_id: Optional[int] = None) -> dict:
+        params = self._create_endpoint_params('update', 'contact_organizations', user_id=user_id, name=name, id=id)
+        return self._send_api_request(params)
+
+    def delete_contact_organization(self, id: int, user_id: Optional[int] = None) -> dict:
+        params = self._create_endpoint_params('delete', 'contact_organizations', user_id=user_id, id=id)
+        return self._send_api_request(params)
