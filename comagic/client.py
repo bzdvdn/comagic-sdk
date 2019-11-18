@@ -94,7 +94,7 @@ class Comagic(object):
         return Account.from_dict(response)
 
     def get_virtual_numbers(self, limit: Optional[int] = None, offset: Optional[int] = None,
-                            filter: dict = None, fields: list = None, sort: list = [],
+                            filter: dict = None, fields: list = None, sort: list = None,
                             user_id: Optional[int] = None) -> any:
         if not fields:
             fields = VirtualNumber.fields()
@@ -764,9 +764,9 @@ class Comagic(object):
         return map(ChatMessage.from_dict, response)
 
     def get_offline_messages_report(self, date_from: datetime, date_till: datetime, limit: Optional[int] = None,
-                         offset: Optional[int] = None,
-                         filter: dict = None, fields: list = None, sort: list = None,
-                         user_id: Optional[int] = None) -> any:
+                                    offset: Optional[int] = None,
+                                    filter: dict = None, fields: list = None, sort: list = None,
+                                    user_id: Optional[int] = None) -> any:
         if not fields:
             fields = OfflineMessage.fields()
         kwargs = {
@@ -802,9 +802,9 @@ class Comagic(object):
         return map(VisitorSession.from_dict, response)
 
     def get_financial_call_legs_report(self, date_from: datetime, date_till: datetime, limit: Optional[int] = None,
-                                    offset: Optional[int] = None,
-                                    filter: dict = None, fields: list = None, sort: list = None,
-                                    user_id: Optional[int] = None) -> any:
+                                       offset: Optional[int] = None,
+                                       filter: dict = None, fields: list = None, sort: list = None,
+                                       user_id: Optional[int] = None) -> any:
         if not fields:
             fields = FinancialCallLegs.fields()
         kwargs = {
