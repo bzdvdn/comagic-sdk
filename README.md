@@ -38,7 +38,7 @@ client.delete_site(id='<site_id>', user_id='<user_id> if needed')
 
 # update site
 site = {
-    'id': 1231`
+    'id': 1231,
     'domain_name': 'test1.ru',
     'default_phone_number': '79379992',
     'industry_id': 2,
