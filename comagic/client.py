@@ -35,7 +35,7 @@ class Comagic(object):
         else:
             raise ValueError("miss auth params login and password or token")
 
-    def _send_api_request(self, params: dict) -> any:
+    def _send_api_request(self, params: dict, auth_counter=0) -> any:
         """
         :param params: dict (params for comagic request)
         :param counter: int
@@ -46,8 +46,8 @@ class Comagic(object):
         except (JSONDecodeError, requests.ConnectionError) as e:
             raise ComagicException({"code": 502, "message": f"{e}"})
         if "error" in resp:
-            if resp["error"]["code"] == -32001:
-                return self._send_api_request(params)
+            if resp["error"]["code"] == -32001 and auth_counter <= 3:
+                return self._send_api_request(params, auth_counter+1)
             raise ComagicException(resp["error"])
         if 'data' in resp['result']:
             return resp["result"]["data"]
