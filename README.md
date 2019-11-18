@@ -252,3 +252,64 @@ client.update_contact_organization(id=1, name='test', user_id='<user_id> if need
 # delete contact organization
 client.delete_contact_organization(id=1, user_id='<user_id> if needed')
 ```
+
+### Schedules
+doc - <a href='https://www.comagic.ru/support/api/data-api/Contacts/'>Графики активности<a>
+```python
+# get schedules
+schedules = client.get_schedules(limit=100, offset=0, fields=None,
+filter=None, sort=None,
+user_id='<user_id> if needed')
+
+# create schedule
+client.create_schedule(name='first', user_id='<user_id> if needed')
+
+# delete schedule
+client.delete_schedule(id=1)
+
+# update schedule
+client.update_schedule(id=1, name='erste')
+```
+
+# Reports
+doc - <a href='https://www.comagic.ru/support/api/data-api/Reports/'>Отчеты<a>
+```python
+from datetime import datetime, timedelta
+date_from = datetime.now() - timedelta(days=1)
+date_till = datetime.now()
+
+# communication report
+communication_report = client.get_communication_report(date_from=date_from, date_till=date_till, user_id='<user_id> if needed')
+
+# calls report
+calls_report = client.get_calls_report(date_from=date_from, date_till=date_till, user_id='<user_id> if needed')
+
+# call legs report
+call_legs_report = client.get_call_legs_report(date_from=date_from, date_till=date_till, user_id='<user_id> if needed')
+
+# goals report
+goals_report = client.get_goals_report(date_from=date_from, date_till=date_till, user_id='<user_id> if needed')
+
+# chats report
+chats_report = client.get_chats_report(date_from=date_from, date_till=date_till, user_id='<user_id> if needed')
+
+# chat messages report
+messages = client.get_chat_messages_report(chat_id=1, user_id='<user_id> if needed')
+
+# offline messages report
+offline_messages = client.get_offline_messages_report(date_from=date_from, date_till=date_till, user_id='<user_id> if needed')
+
+# visitor sessions report
+visitor_sessions_report = client.get_visitor_sessions_report(date_from=date_from, date_till=date_till, user_id='<user_id> if needed')
+
+# financial call legs report
+financial_call_legs_report = client.get_financial_call_legs_report(date_from=date_from, date_till=date_till, user_id='<user_id> if needed')
+```
+
+### Campaign daily stat
+```python
+from datetime import datetime, timedelta
+date_from = datetime.now() - timedelta(days=1)
+date_till = datetime.now()
+campaign_daily_stat = client.get_campaign_daily_stat(date_from=date_from, date_till=date_till, user_id='<user_id> if needed')
+```

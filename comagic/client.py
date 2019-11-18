@@ -10,7 +10,7 @@ from .models import (Account, VirtualNumber, AvailableVirtualNumber, SipLine, Sc
                      CampaignAvailablePhoneNumber, CampaignAvailableRedirectPhoneNumber, CampaignWeight, Site,
                      SiteBlock, Tag, Employee, EmployeeGroup, CustomerUser, Call, CallLegs, FinancialCallLegs,
                      Customer, Communication, Contact, Chat, ChatMessage, Schedule, VisitorSession, OfflineMessage,
-                     Goal, ContactGroup, ContactOrganization)
+                     Goal, ContactGroup, ContactOrganization, CampaignDailyStat)
 
 
 class Comagic(object):
@@ -936,3 +936,53 @@ class Comagic(object):
     def delete_contact_organization(self, id: int, user_id: Optional[int] = None) -> dict:
         params = self._create_endpoint_params('delete', 'contact_organizations', user_id=user_id, id=id)
         return self._send_api_request(params)
+
+    def get_schedules(self, limit: Optional[int] = None,
+                      offset: Optional[int] = None,
+                      filter: dict = None, fields: list = None, sort: list = None,
+                      user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = Schedule.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+        }
+        params = self._create_endpoint_params('get', 'schedules', user_id=user_id, **kwargs)
+        response = self._send_api_request(params)
+        return map(Schedule.from_dict, response)
+
+    def create_schedule(self, name: str, schedules: Optional[list] = None, user_id: Optional[int] = None) -> dict:
+        params = self._create_endpoint_params('create', 'schedules', user_id=user_id, name=name, schedules=schedules)
+        return self._send_api_request(params)
+
+    def delete_schedule(self, id: int, user_id: Optional[int] = None) -> dict:
+        params = self._create_endpoint_params('delete', 'schedules', user_id=user_id, id=id)
+        return self._send_api_request(params)
+
+    def update_schedule(self, id: int, name: str, schedules: Optional[list] = None,
+                        user_id: Optional[int] = None) -> dict:
+        params = self._create_endpoint_params('update', 'schedules', user_id=user_id,
+                                              id=id, name=name, schedules=schedules)
+        return self._send_api_request(params)
+
+    def get_campaign_daily_stat(self, date_from: datetime, date_till: datetime, limit: Optional[int] = None,
+                                offset: Optional[int] = None,
+                                filter: dict = None, fields: list = None, sort: list = None,
+                                user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = CampaignDailyStat.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+            'date_from': date_from.strftime(DATETIME_FORMAT),
+            'date_till': date_till.strftime(DATETIME_FORMAT),
+        }
+        params = self._create_endpoint_params('get', 'campaign_daily_stat', user_id=user_id, **kwargs)
+        response = self._send_api_request(params)
+        return map(CampaignDailyStat.from_dict, response)
