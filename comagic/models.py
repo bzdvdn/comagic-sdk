@@ -7,6 +7,7 @@ class BaseModel(object):
         self.__set_default_attrs()
         for field, value in kwargs.items():
             if field not in fields:
+                print("Invalid field - ", field)
                 raise AttributeError('%s not in attributes for this %s' % field, self.__class__.__name__)
             setattr(self, field, value)
 
@@ -28,6 +29,9 @@ class BaseModel(object):
     def __repr__(self):
         state = ['%s=%s' % (k, repr(v)) for (k, v) in vars(self).items()]
         return '%s(%s)' % (self.__class__.__name__, ', '.join(state))
+
+    def __getitem__(self, item):
+        return getattr(self, item)
 
 
 class Account(BaseModel):
@@ -250,7 +254,7 @@ class Call(BaseModel):
             'visitor_custom_properties', 'segments', 'contact_id', 'contact_full_name', 'utm_source', 'utm_medium',
             'utm_term', 'utm_content', 'utm_campaign', 'openstat_ad', 'openstat_campaign', 'openstat_service',
             'openstat_source', 'attributes', 'eq_utm_source', 'eq_utm_medium', 'eq_utm_term', 'eq_utm_content',
-            'eq_utm_campaign', 'eq_utm_referrer', 'eq_utm_expid',
+            'eq_utm_campaign', 'eq_utm_referrer', 'eq_utm_expid', 'utm_referrer', 'source',
         ]
 
     @classmethod
@@ -293,7 +297,7 @@ class Goal(BaseModel):
             'visitor_country', 'visitor_device', 'visitor_custom_properties', 'segments', 'utm_source', 'utm_medium',
             'utm_term', 'utm_content', 'utm_campaign', 'openstat_ad', 'openstat_campaign', 'openstat_service',
             'openstat_source', 'eq_utm_source', 'eq_utm_medium', 'eq_utm_term', 'eq_utm_content', 'eq_utm_campaign',
-            'eq_utm_referrer', 'eq_utm_expid', 'attributes',
+            'eq_utm_referrer', 'eq_utm_expid', 'attributes', 'utm_referrer',
         ]
 
     @classmethod
@@ -318,7 +322,7 @@ class Chat(BaseModel):
             'utm_source', 'utm_medium', 'utm_term', 'utm_content', 'utm_campaign', 'openstat_ad',
             'openstat_campaign', 'openstat_service', 'openstat_source', 'eq_utm_source', 'eq_utm_medium',
             'eq_utm_term', 'eq_utm_content', 'eq_utm_campaign', 'eq_utm_referrer', 'eq_utm_expid', 'attributes',
-            'visitor_custom_properties', 'segments', 'tags'
+            'visitor_custom_properties', 'segments', 'tags', 'utm_referrer', 'source',
         ]
 
     @classmethod
@@ -356,7 +360,7 @@ class OfflineMessage(BaseModel):
             'visitor_region', 'visitor_device', 'visitor_custom_properties', 'segments', 'utm_source', 'utm_medium',
             'utm_term', 'utm_content', 'utm_campaign', 'openstat_ad', 'openstat_campaign', 'openstat_service',
             'openstat_source', 'attributes', 'eq_utm_source', 'eq_utm_medium', 'eq_utm_term', 'eq_utm_content',
-            'eq_utm_campaign', 'eq_utm_referrer', 'eq_utm_expid',
+            'eq_utm_campaign', 'eq_utm_referrer', 'eq_utm_expid', 'utm_referrer', 'source',
         ]
 
     @classmethod
