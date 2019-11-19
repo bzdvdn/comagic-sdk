@@ -4,7 +4,8 @@ class ComagicException(Exception):
         super().__init__(args, kwargs)
 
     def __str__(self):
-        return f"Code: {self.error_data['code']}, message: {self.error_data['message']}"
+        return f"Code: {self.error_data['code']}, message: {self.error_data['message']}, data: " \
+               f"{self.error_data.get('data')}"
 
 
 class ComagicParamsError(Exception):

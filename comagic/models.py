@@ -112,7 +112,7 @@ class Site(BaseModel):
     @classmethod
     def fields(cls) -> list:
         return [
-            'id', 'domain_name', 'default_phone_number', 'default_scenario', 'site_key', 'industry_id',
+            'id', 'domain_name', 'default_phone_number', 'default_scenario', 'site_key', 'industry_id', 'creation_date',
             'industry_name', 'target_call_min_duration', 'track_subdomains', 'cookie_lifetime', 'campaign_lifetime',
             'sales_enabled', 'second_communication_period', 'services_enabled', 'replacement_dynamical_block_enabled',
             'widget_link', 'show_visitor_id', 'site_blocks', 'connected_integrations'
@@ -120,6 +120,7 @@ class Site(BaseModel):
 
     @classmethod
     def from_dict(cls, model_dict):
+        model_dict['creation_date'] = parse_datetime(model_dict.get('creation_date'))
         return cls(**model_dict)
 
 
@@ -195,7 +196,7 @@ class Customer(BaseModel):
     @classmethod
     def fields(cls) -> list:
         return [
-            'id', 'name', 'description', 'creation_date_time', 'status_change_date_time', 'tariff_plan_id',
+            'id', 'name', 'description', 'creation_date', 'status_change_date_time', 'tariff_plan_id',
             'tariff_plan_name', 'monthly_base_limit', 'monthly_base_notify_limit', 'monthly_base_notify_emails',
             'monthly_calls_limit', 'monthly_calls_notify_limit', 'monthly_calls_notify_emails', 'daily_calls_limit',
             'daily_calls_notify_limit', 'daily_calls_notify_emails', 'sites'
@@ -203,8 +204,7 @@ class Customer(BaseModel):
 
     @classmethod
     def from_dict(cls, model_dict):
-        model_dict['creation_date_time'] = parse_datetime(model_dict.get('creation_date_time'))
-        model_dict['status_change_date_time'] = parse_datetime(model_dict.get('status_change_date_time'))
+        model_dict['creation_date'] = parse_datetime(model_dict.get('creation_date'))
         return cls(**model_dict)
 
 

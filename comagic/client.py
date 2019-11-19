@@ -414,8 +414,6 @@ class Comagic(object):
                   offset: Optional[int] = None,
                   filter: dict = None, fields: list = None, sort: list = None,
                   user_id: Optional[int] = None) -> any:
-        if not fields:
-            fields = Site.fields()
         kwargs = {
             'limit': limit,
             'offset': offset,
