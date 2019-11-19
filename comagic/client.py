@@ -986,3 +986,20 @@ class Comagic(object):
         params = self._create_endpoint_params('get', 'campaign_daily_stat', user_id=user_id, **kwargs)
         response = self._send_api_request(params)
         return map(CampaignDailyStat.from_dict, response)
+
+    def get_customers(self, limit: Optional[int] = None,
+                      offset: Optional[int] = None,
+                      filter: dict = None, fields: list = None, sort: list = None,
+                      user_id: Optional[int] = None) -> any:
+        if not fields:
+            fields = Customer.fields()
+        kwargs = {
+            'limit': limit,
+            'offset': offset,
+            'filter': filter,
+            'fields': fields,
+            'sort': sort,
+        }
+        params = self._create_endpoint_params('get', 'customers', user_id=user_id, **kwargs)
+        response = self._send_api_request(params)
+        return map(Customer.from_dict, response)
