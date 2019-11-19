@@ -777,7 +777,7 @@ class Comagic(object):
             'date_from': date_from.strftime(DATETIME_FORMAT),
             'date_till': date_till.strftime(DATETIME_FORMAT),
         }
-        params = self._create_endpoint_params('get', 'chats_report', user_id=user_id, **kwargs)
+        params = self._create_endpoint_params('get', 'offline_messages_report', user_id=user_id, **kwargs)
         response = self._send_api_request(params)
         return map(OfflineMessage.from_dict, response)
 
