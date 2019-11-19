@@ -31,7 +31,31 @@ class BaseModel(object):
         return '%s(%s)' % (self.__class__.__name__, ', '.join(state))
 
     def __getitem__(self, item):
-        return getattr(self, item)
+        return self.__dict__[item]
+
+    def keys(self):
+        return self.__dict__.keys()
+
+    def values(self):
+        return self.__dict__.values()
+
+    def items(self):
+        return self.__dict__.items()
+
+    def pop(self, *args):
+        return self.__dict__.pop(*args)
+
+    def __iter__(self):
+        return iter(self.__dict__)
+
+    def __contains__(self, item):
+        return item in self.__dict__
+
+    def __delitem__(self, key):
+        del self.__dict__[key]
+
+    def __setitem__(self, key, item):
+        self.__dict__[key] = item
 
 
 class Account(BaseModel):
