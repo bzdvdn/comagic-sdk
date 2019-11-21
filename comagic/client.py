@@ -21,7 +21,6 @@ class Comagic(object):
         :param token: str (token from comagic if needed.)
         :param uis: bool (if you wanna use uis api)
         """
-        self._comagic_ap_id = None
         if uis:
             api_url = "https://dataapi.uiscom.ru/v2.0"
         else:
@@ -63,7 +62,6 @@ class Comagic(object):
         }
 
         resp = self._send_api_request(params)
-        self._comagic_app_id = resp["app_id"]
         return resp["access_token"]
 
     def _create_endpoint_params(self, method: str, endpoint: str, user_id: any = None, **kwargs) -> dict:
@@ -92,7 +90,7 @@ class Comagic(object):
     def get_account(self, user_id: Optional[int] = None):
         params = self._create_endpoint_params('get', 'account', user_id=user_id)
         response = self._send_api_request(params)
-        return Account.from_dict(response)
+        return Account.from_dict(response[0])
 
     def get_virtual_numbers(self, limit: Optional[int] = None, offset: Optional[int] = None,
                             filter: dict = None, fields: list = None, sort: list = None,
