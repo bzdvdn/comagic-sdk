@@ -52,9 +52,13 @@ class BaseModel(object):
         return item in self.__dict__
 
     def __delitem__(self, key):
+        if key not in self.fields():
+            raise KeyError(f'{key} not in model fields')
         del self.__dict__[key]
 
     def __setitem__(self, key, item):
+        if key not in self.fields():
+            raise KeyError(f'{key} not in model fields')
         self.__dict__[key] = item
 
 
