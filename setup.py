@@ -2,12 +2,9 @@ from setuptools import setup, find_packages
 
 setup(
     name='comagic-data-api-sdk',
-    version='0.0.3.1',
+    version='0.0.3.2',
     packages=find_packages(),
-    install_requires=[
-        'requests>=2.18.2',
-        'pytz>=2019.3'
-    ],
+    install_requires=['requests>=2.18.2', 'pytz>=2019.3'],
     description='Comagic data api sdk',
     author='bzdvdn',
     author_email='bzdv.dn@gmail.com',
